@@ -44,6 +44,9 @@ impl Editor{
         // 打印退出信息
         if self.should_quit{
             println!("Goodbye.\r");
+        }else {
+            self.draw_rows();
+            print!("{}",termion::cursor::Goto(1,1))
         }
 
         io::stdout().flush()
@@ -59,6 +62,13 @@ impl Editor{
         Ok(())
 
     }
+    fn draw_rows(&self){
+        for _ in 0..24{
+            println!("~\r");
+        }
+    }
+
+
     // 读取输入
     fn read_key() -> Result<Key, std::io::Error> {
         loop {
