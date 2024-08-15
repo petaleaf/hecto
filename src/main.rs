@@ -16,15 +16,20 @@ fn die(e:std::io::Error) {
 fn main() {
     let _stdout = stdout().into_raw_mode().unwrap();
     for b in io::stdin().bytes() {
-        let b = b.unwrap();
-        let c = b as char;
-        if c.is_control() {
-            println!("{:?} \r", b);
-        } else {
-            println!("{:?} ({})\r", b, c);
-        }
-        if b == to_ctrl_byte('d'){
-            break;
+        match b {
+            Ok(b) =>{
+
+                let c = b as char;
+                if c.is_control() {
+                    println!("{:?} \r", b);
+                } else {
+                    println!("{:?} ({})\r", b, c);
+                }
+                if b == to_ctrl_byte('d'){
+                    break;
+                }
+            }
+            Err(e) => die(e),
         }
     }
     
