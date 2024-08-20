@@ -152,13 +152,33 @@ impl Editor{
             }
             
 
-            Key::Left => x = x.saturating_sub(1),
-            // Key::Right => x = x.saturating_add(1),
-            Key::Right => {
-                if x < width {
-                    x = x.saturating_add(1);
+            // Key::Left => x = x.saturating_sub(1),
+            // 行首再向前移动则移动至上一行的行尾
+            Key::Left => {
+                if x >0 {
+                    x-=1;
+                }else if y >0 {
+                    y -=1;
+                    if let Some(row) = self.document.row(y){
+                        x = row.len();
+
+                }else{
+                    x = 0;
+                }
                 }
             }
+            // Key::Right => x = x.saturating_add(1),
+            // 光标在行尾的时候再向后移动，则移动到下一行的行首
+            Key::Right => {
+                if x < width {
+                    // x = x.saturating_add(1)；
+                    x +=1;
+                }else if y < height-1 {
+                    y +=1;
+                    x = 0;
+                }
+            }
+            
             // Key::PageUp => y = 0,
             // Key::PageDown => y = height,
             Key::PageUp => {
