@@ -129,13 +129,14 @@ impl Editor{
         }
     }
     fn move_cursor(&mut self, key: Key) {
+        let terminal_height = self.terminal.size().height as usize;
         let Position {mut x, mut y} = self.cursor_position;
         // let size =self.terminal.size();
         // let height = size.height.saturating_sub(1) as usize;
         let height = self.document.len();
         // let width = size.width.saturating_sub(1) as usize;
         // 对水平方向的移动进行限制
-        let width = if let Some(row) = self.document.row(y){
+        let mut width = if let Some(row) = self.document.row(y){
             row.len()
 
         }else{
@@ -158,12 +159,35 @@ impl Editor{
                     x = x.saturating_add(1);
                 }
             }
-            Key::PageUp => y = 0,
-            Key::PageDown => y = height,
+            // Key::PageUp => y = 0,
+            // Key::PageDown => y = height,
+            Key::PageUp => {
+                y = if y> terminal_height {
+                    y - terminal_height
+                }else {
+                    0
+                }
+            }
+            Key::PageDown => {
+                y = if y.saturating_add(terminal_height) < height {
+                    y + terminal_height as usize
+                }else{
+                    height
+                }
+            }
             Key::Home => x = 0,
             Key::End => x = width,
             _ => (),
         }
+        // 按键过程中换了行，要重新限定x的值，避免超过行的宽度
+        width = if let Some(row) = self.document.row(y) {
+            row.len()
+        }else {
+            0
+        };
+        if x > width{
+            x = width;
+        } 
         self.cursor_position = Position { x, y }
     }
 
