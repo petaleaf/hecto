@@ -1,4 +1,4 @@
-use std::cmp;
+use std::{cmp, result};
 use unicode_segmentation::UnicodeSegmentation;
 #[derive(Default)]
 pub struct Row {
@@ -69,6 +69,19 @@ impl Row {
             result.push(c);
             result.push_str(&remainder);
             self.string = result
+        }
+        self.update_len();
+    }
+    pub fn delet(&mut self,at:usize) {
+        if at >self.len(){
+            return;
+        }else {
+            let mut result: String = self.string[..].graphemes(true).take(at).collect();
+            let remainder: String = self.string[..].graphemes(true).skip(at+1).collect();
+            result.push_str(&remainder);
+            self.string = result;
+
+
         }
         self.update_len();
     }

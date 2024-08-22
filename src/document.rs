@@ -1,3 +1,4 @@
+use crate::row;
 use crate::Position;
 use crate::Row;
 use std::fs;
@@ -33,7 +34,7 @@ impl Document {
     pub fn len(&self) ->usize {
         self.rows.len()
     }
-    pub fn insert(&mut self, at:Position,c:char) {
+    pub fn insert(&mut self, at:&Position,c:char) {
         if at.y == self.len(){
             // 如果在最后一行则添加新行
             let mut row = Row::default();
@@ -45,5 +46,12 @@ impl Document {
             // 在光标当前行插入
             row.insert(at.x, c)
         }
+    }
+    pub fn delet(&mut self,at:&Position){
+        if at.y >=self.len(){
+            return;
+        }
+        let row = self.rows.get_mut(at.y).unwrap();
+        row.delet(at.x);
     }
 }
