@@ -132,7 +132,11 @@ impl Editor{
         match pressed_key {
             // Key::Ctrl('d') =>panic!("Promgram end"),
             Key::Ctrl('d') => self.should_quit = true,
-            Key::Char('c') => self.document.insert(&self.cursor_position, c),
+            // Key::Char(c) => self.document.insert(&self.cursor_position, c),
+            Key::Char(c) =>{
+                self.document.insert(&self.cursor_position, c);
+                self.move_cursor(Key::Right);
+            }
             Key::Up 
             | Key::Down 
             | Key::Left 
