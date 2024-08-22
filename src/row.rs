@@ -1,5 +1,6 @@
 use std::cmp;
 use unicode_segmentation::UnicodeSegmentation;
+#[derive(Default)]
 pub struct Row {
     string: String,
     len: usize,
@@ -56,5 +57,19 @@ impl Row {
     // 在此处单独是实现，可以避免count便利整个迭代器，这样可以减少资源消耗
     fn update_len(&mut self){
         self.len = self.string[..].graphemes(true).count();
+    }
+    pub fn insert(&mut self,at:usize,c:char){
+        // 如果大于这一行的长度
+        if at >= self.len(){
+            self.string.push(c);
+        }else {
+            // 将源字符串按照插入位置拆成两部分,在将其与要插入的字符连接
+            let mut result: String = self.string[..].graphemes(true).take(at).collect();
+            let remainder: String = self.string[..].graphemes(true).skip(at).collect();
+            result.push(c);
+            result.push_str(&remainder);
+            self.string = result
+        }
+        self.update_len();
     }
 }

@@ -132,6 +132,7 @@ impl Editor{
         match pressed_key {
             // Key::Ctrl('d') =>panic!("Promgram end"),
             Key::Ctrl('d') => self.should_quit = true,
+            Key::Char('c') => self.document.insert(&self.cursor_position, c),
             Key::Up 
             | Key::Down 
             | Key::Left 
@@ -335,6 +336,7 @@ impl Editor{
     fn draw_message_bar(&self){
         Terminal::clear_current_line();
         let message = &self.status_message;
+        // 5s之内显示帮助信息
         if Instant::now() - message.time < Duration::new(5,0){
             let mut text = message.text.clone();
             text.truncate(self.terminal.size().width as usize);
