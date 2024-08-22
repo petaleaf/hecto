@@ -281,9 +281,21 @@ impl Editor{
         }
         // 拼接要在状态栏显示的信息
         status = format!("{} ❤❤❤ {} lines", file_name,self.document.len());
-        if width > status.len() {
-            status.push_str(&" ".repeat(width-status.len()));
+        // if width > status.len() {
+            // status.push_str(&" ".repeat(width-status.len()));
+
+
+        // }
+        let line_indicator = format!(
+            "{}/{}",
+            self.cursor_position.y.saturating_add(1),
+            self.document.len()
+        );
+        let len = status.len()+line_indicator.len();
+        if width >len {
+            status.push_str(&" ".repeat(width-len))
         }
+        status = format!("{}{}",status,line_indicator);
         status.truncate(width);
         Terminal::set_bg_color(STATUS_BG_COLOR);
         // println!("{}\r",spaces);
