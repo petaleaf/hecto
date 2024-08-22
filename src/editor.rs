@@ -3,9 +3,11 @@ use crate::Terminal;
 use crate::Row;
 use std::env;
 use termion::event::Key;
+use termion::color;
 
-
+const STATUS_BAR_COLOR: color::Rgb = color::Rgb(239,239,239);
 const VERSION: &str = env!("CARGO_PKG_VERSION");
+
 #[derive(Default)]
 pub struct Position {
     pub x: usize,
@@ -84,7 +86,13 @@ impl Editor{
         }else {
             self.draw_rows();
             // Terminal::cursor_position(0,0);
-            Terminal::cursor_position(&self.cursor_position);
+            // Terminal::cursor_position(&self.cursor_position);
+            self.draw_status_bar();
+            self.draw_message_bar();
+            Terminal::cursor_position(&Position{
+                x: self.cursor_position.x.saturating_sub(self.offset.x),
+                y: self.cursor_position.y.saturating_sub(self.offset.y),
+            })
             
         }
         // Ok(())
@@ -241,7 +249,8 @@ impl Editor{
         
         let height = self.terminal.size().height;
         // for row in 0..height -1{
-        for terminal_row in 0..height-1{
+        // for terminal_row in 0..height-1{
+        for terminal_row in 0..height{
             // println!("~\r");
             Terminal::clear_current_line();
             // if row == height / 3 {
@@ -259,6 +268,15 @@ impl Editor{
                 println!("~\r");
             }
         }
+    }
+    fn draw_status_bar(&self){
+        let spaces = " ".repeat(self.terminal.size().width as usize);
+        Terminal::set_bg_color(STATUS_BAR_COLOR);
+        println!("{}\r",spaces);
+        Terminal::reset_bg_color();
+    }
+    fn draw_message_bar(&self){
+        Terminal::clear_current_line();
     }
 
 
