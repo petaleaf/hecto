@@ -1,6 +1,7 @@
 use crate::row;
 use crate::Position;
 use crate::Row;
+use std::default;
 use std::fs;
 #[derive(Default)]
 
@@ -34,7 +35,25 @@ impl Document {
     pub fn len(&self) ->usize {
         self.rows.len()
     }
+    pub fn insert_newline(&mut self, at:&Position){
+        if at.y > self.len(){
+            return;
+        }
+        // 回车插入新行
+        // let new_row = Row::default();
+        // if at.y == self.len() ||at.y.saturating_add(1) == self.len() {
+        //     self.rows.push(new_row);
+        if at.y == self.len(){
+            self.rows.push(Row::default());
+        }
+        let new_row = self.rows.get_mut(at.y).unwrap().split(at.x);
+        self.rows.insert(at.y+1, new_row)
+    }
     pub fn insert(&mut self, at:&Position,c:char) {
+        if c == '\n'{
+            self.insert_newline(at);
+            return;
+        }
         if at.y == self.len(){
             // 如果在最后一行则添加新行
             let mut row = Row::default();
@@ -47,7 +66,7 @@ impl Document {
             row.insert(at.x, c)
         }
     }
-    pub fn delet(&mut self,at:&Position){
+    pub fn delete(&mut self,at:&Position){
         let len = self.len();
         if at.y >=len{
             return;
@@ -63,4 +82,5 @@ impl Document {
             row.delet(at.x)
         }
     }
+    
 }

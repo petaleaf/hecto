@@ -62,8 +62,6 @@ impl Editor{
 
 
 
-
-
     // 默认执行
     pub fn default()->Self{
         let args: Vec<String> = env::args().collect();
@@ -119,7 +117,7 @@ impl Editor{
             Terminal::cursor_position(&Position{
                 x: self.cursor_position.x.saturating_sub(self.offset.x),
                 y: self.cursor_position.y.saturating_sub(self.offset.y),
-            })
+            });
             
         }
         // Ok(())
@@ -137,11 +135,11 @@ impl Editor{
                 self.document.insert(&self.cursor_position, c);
                 self.move_cursor(Key::Right);
             }
-            Key::Delete => self.document.delet(&self.cursor_position),
+            Key::Delete => self.document.delete(&self.cursor_position),
             Key::Backspace => {
                 if self.cursor_position.x>0 || self.cursor_position.y >0 {
                     self.move_cursor(Key::Left);
-                    self.document.delet(&self.cursor_position);
+                    self.document.delete(&self.cursor_position);
                 }
             }
             Key::Up 
